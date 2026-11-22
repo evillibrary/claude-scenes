@@ -24,10 +24,10 @@ const clip = (sx: number, sy: number) => {
 
 // Inside the ellipse over the nebula, where no spread star goes.
 const overNebula = (sx: number, sy: number) => {
-  const dx = sx - 1500
-  const dy = sy - 340
-  const ex = (dx * 0.94 + dy * -0.342) / 400
-  const ey = (dy * 0.94 - dx * -0.342) / 125
+  const dx = sx - 1590
+  const dy = sy - 370
+  const ex = (dx * 0.643 + dy * -0.766) / 340
+  const ey = (dy * 0.643 - dx * -0.766) / 105
   return ex * ex + ey * ey < 1
 }
 
@@ -41,7 +41,7 @@ const place = (i: number, salt: number, cols: number) => {
   const band = cols > 1 ? floor(mod(floor(i / cols) + col, 3)) : 0
   const bands = cols > 1 ? 3 : 1
   let sy = 20 + ((band + hash(i * 2.11 + salt + 101.25)) / bands) * 960
-  if (overNebula(sx, sy)) sy = 620 + hash(i * 3.7 + salt) * 360
+  if (overNebula(sx, sy)) sy = 760 + hash(i * 3.7 + salt) * 220
   return clip(sx, sy)
 }
 
@@ -101,10 +101,10 @@ const around = shapes(
     const a1 = i < 13.5 ? 2.793 : i < 27.5 ? 5.934 : i < 30.5 ? 3.491 : 6.632
     const t = a0 + hash(i * 1.73 + 600.5) * (a1 - a0)
     const out = 1.03 + 0.27 * hash(i * 2.39 + 700.5)
-    const ox = cos(t) * 400 * out
-    const oy = sin(t) * 125 * out
-    const sx = 1500 + ox * 0.94 - oy * -0.342
-    const sy = 340 + ox * -0.342 + oy * 0.94
+    const ox = cos(t) * 340 * out
+    const oy = sin(t) * 105 * out
+    const sx = 1590 + ox * 0.643 - oy * -0.766
+    const sy = 370 + ox * -0.766 + oy * 0.643
     const h = hash(i + 307.5)
     return {
       at: clip(sx, sy),
@@ -126,7 +126,7 @@ const corner = (centre: number, v: number, half: number) => {
 
 // Cross stars placed by hand: scene x, y, reach in points (centre to spike
 // tip), and which colour.
-const PLACED = table([[300, 860, 55, 0], [1700, 650, 58, 1], [880, 70, 36, 2], [1372, 201, 46, 3]])
+const PLACED = table([[300, 860, 55, 0], [1700, 650, 58, 1], [880, 70, 36, 2], [1436, 322, 42, 3]])
 const placedColour = (k: number) => k < 0.5 ? vec3(1, 0.9, 0.6) : k < 1.5 ? vec3(0.86, 0.92, 1) : k < 2.5 ? vec3(1, 0.92, 0.7) : vec3(1, 0.88, 0.6)
 
 // 33 cross stars spread over the sky, then the 4 placed by hand. The
@@ -159,7 +159,7 @@ const big = shapes(
 const core = shapes(
   { count: 6, instances: 1, draw: 'triangles', cover: 1, blend: 'add' },
   v => {
-    const q = corner(clip(1495, 328), v, 40)
+    const q = corner(clip(1581, 363), v, 36)
     return { at: q.at, a: vec4(q.c, 0, 0) }
   },
   spot => light(vec3(0.9, 0.95, 1), crossStar(spot.a.xy) * 0.9),

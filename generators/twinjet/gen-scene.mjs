@@ -6,8 +6,8 @@
 //
 // See philosophy.md. The Twin Jet Nebula (PN M2-9), traced from the 2015 Hubble
 // image (ESA/Hubble & NASA, Acknowledgement: Judy Schmidt) into brush strokes
-// by ../lib/trace.mjs, stretches across the upper right of a black star field,
-// tilted like the 1997 Hubble picture of it (its right end up). Like the Ring,
+// by ../lib/trace.mjs, stands on the right of a black star field, tilted 50
+// degrees (its right end up; the 1997 Hubble picture leans about 22). Like the Ring,
 // the SVG holds nothing animated at all (any change near thousands of traced
 // strokes froze the app): the shader (../lib/shader.mjs) adds twinkling stars,
 // cross stars, a cross on the central star, a pair of distant stars circling
@@ -59,9 +59,9 @@ const { UNDER, FIL, SPARK, count, counts, lines, PW, PH, unit } = trace(loadPixe
 // pixel, and the whole picture turned ANGLE degrees (negative is anticlockwise:
 // right end up, as in the 1997 photo, where the lobes' axis leans about 22
 // degrees; the 2015 photo is nearly level).
-const NEB = [1500, 340]
-const ANGLE = -20
-const S = 1000 / PW
+const NEB = [1590, 370]
+const ANGLE = -50
+const S = 850 / PW
 const X0 = -(PW * S) / 2
 const Y0 = -(PH * S) / 2
 const CA = Math.cos((ANGLE * Math.PI) / 180)
@@ -85,7 +85,7 @@ const [HX, HY] = toScene([(422 / 988) * PW, ((254 - 282) / 988) * PW])
 seed = 20261121
 // The nebula and its glow, a long ellipse on the slant (measured on a render):
 // no stars behind it.
-const AV = { cx: NEB[0], cy: NEB[1], rx: 400, ry: 125, rot: ANGLE }
+const AV = { cx: NEB[0], cy: NEB[1], rx: 340, ry: 105, rot: ANGLE }
 const inside = (x, y, k = 1) => {
   const dx = x - AV.cx
   const dy = y - AV.cy
@@ -138,7 +138,7 @@ const SHADER = starShader({
   title: 'the Twin Jet Nebula: stars, a circling pair and shooting stars',
   // No spread star over the nebula; one that lands there moves below it.
   avoid: AV,
-  moveTo: [620, 980],
+  moveTo: [760, 980],
   // A few more small stars in the dark band hugging the nebula: along its
   // lower edge and its upper edge, and a few at each tip.
   around: [
@@ -151,10 +151,10 @@ const SHADER = starShader({
     [300, 860, 55, [1, 0.9, 0.6]], // larger, slightly yellow, near the bottom left
     [1700, 650, 58, [0.86, 0.92, 1]], // larger, very faintly blue, on the lower right
     [880, 70, 36, [1, 0.92, 0.7]], // medium, yellowish, at the top
-    [i0(HX), i0(HY), 46, [1, 0.88, 0.6]], // the bright orange-gold star above the nebula in the photo
+    [i0(HX), i0(HY), 42, [1, 0.88, 0.6]], // the bright orange-gold star above the nebula in the photo
   ],
   // The star at the nebula's heart.
-  core: { x: i0(WX), y: i0(WY), reach: 40, rgb: [0.9, 0.95, 1], strength: 0.9 },
+  core: { x: i0(WX), y: i0(WY), reach: 36, rgb: [0.9, 0.95, 1], strength: 0.9 },
   // Two distant stars on the left of the sky circle each other, one orbit
   // every 61 s: a quiet echo of the binary at the nebula's heart.
   binary: { x: 330, y: 330, sep: 26, period: 61, rgbs: [[1, 0.8, 0.52], [0.72, 0.84, 1]], mass: 0.6 },

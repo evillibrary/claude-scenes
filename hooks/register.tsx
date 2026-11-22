@@ -129,7 +129,7 @@ const LOOKS: Look[] = [
     'twinjet',
     'Twin Jet Nebula',
     TWINJET,
-    'The Twin Jet Nebula, traced from a Hubble photograph, glowing across the upper right of a black star field with twinkling stars, a pair of distant stars circling each other on the left, and a shooting star now and then',
+    'The Twin Jet Nebula, traced from a Hubble photograph, glowing on the right of a black star field with twinkling stars, a pair of distant stars circling each other on the left, and a shooting star now and then',
     { accent: '#7d8cff', danger: '#e0566a', success: '#6fc79a', warning: '#e2b052', pro: '#e07a4a' },
     {
       'surface-0': '#04050d', 'surface-1': '#080a16', 'surface-2': '#0c0f1f', 'surface-3': '#111428',

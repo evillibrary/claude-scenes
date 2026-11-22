@@ -1,5 +1,5 @@
 {
   "name": "claude-scenes",
   "owner": { "name": "evillibrary" },
-  "plugins": [{ "name": "scenes", "source": "./", "description": "Animated backdrop scenes (Mars at dusk, deep sea, rainforest, blizzard, library, and nebulae traced from space-telescope photos: Ring, Crab, Twin Jet, Hourglass, Helix), switched with /scene." }]
+  "plugins": [{ "name": "scenes", "source": "./", "description": "Animated backdrop scenes (Mars at dusk, deep sea, rainforest, blizzard, library, and nebulae traced from space-telescope photos: Ring, Crab, Twin Jet, Hourglass, Helix, Crystal Ball, Southern Ring, Horsehead, four Cat's Eye pictures, Omega, Eagle, Lion), switched with /scene." }]
 }

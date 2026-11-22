@@ -19,7 +19,7 @@ As the Ring, with the same compact brushwork of session 6:
 2. **Filaments:** continuous lines of relative steps that follow the photo's grain (`fil.chain`), `res: 2`, `order: 'nearest'`; the grid is 350 pixels wide so a pixel is 1.35 scene units. About 52,000 spots in 3,700 lines; the filament step is 0.595, which fits the drawing to about 123,300 characters (the build allows 125,000 for a still drawing with a shader).
 3. **Sparks:** the brightest points, as dots.
 
-Each palette colour is one `<path>`. The whole picture is 472 units wide and about 745 tall (the nebula itself about 640 tall), centred at x 470, y 380.
+Each palette colour is one `<path>`. The whole picture is 472 units wide and about 745 tall (the nebula itself about 640 tall), centred at x 420, y 380 (moved 50 units left from x 470 at the person's request, after the scene was first finished; a further 50 was tried, looked too far and was undone; the stars were left exactly where they were, so the generator works the still stars and the clear zone out from the old centre, `STAR_C`).
 
 ## What moves
 

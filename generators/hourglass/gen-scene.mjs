@@ -58,7 +58,11 @@ const { UNDER, FIL, SPARK, count, counts, lines, PW, PH, unit } = trace(loadPixe
 // The nebula's place: the picture's centre at NEB, S scene units per photo pixel
 // (the nebula itself, 935 of the 1090 source pixels tall, comes out about 640
 // units tall).
-const NEB = [470, 380]
+// (Moved 50 units left, from x 470, at the person's request (a second 50 was tried and undone); the stars were
+// then left exactly where they were, so everything star-related below is still
+// worked out from STAR_C, the old centre.)
+const NEB = [420, 380]
+const STAR_C = [470, 380]
 const S = 472 / PW
 const X0 = NEB[0] - (PW * S) / 2
 const Y0 = NEB[1] - (PH * S) / 2
@@ -69,10 +73,10 @@ const WY = Y0 + 0.4844 * PH * S
 // ---------- Still stars (see ../lib/stars.mjs) ----------
 // The shader adds the twinkling stars and the big cross stars over these.
 seed = 20261121
-const BOX = [X0 - 20, Y0 - 20, X0 + PW * S + 20, Y0 + PH * S + 20]
+const BOX = [STAR_C[0] - (PW * S) / 2 - 20, STAR_C[1] - (PH * S) / 2 - 20, STAR_C[0] + (PW * S) / 2 + 20, STAR_C[1] + (PH * S) / 2 + 20]
 // The nebula and its glow, an ellipse taller than it is wide (measured on a
 // render): no stars behind it.
-const AV = { cx: NEB[0], cy: NEB[1], rx: 250, ry: 350 }
+const AV = { cx: STAR_C[0], cy: STAR_C[1], rx: 250, ry: 350 }
 const STARS = starField({
   rand,
   box: BOX,

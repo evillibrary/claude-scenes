@@ -155,7 +155,7 @@ const big = shapes(
 const core = shapes(
   { count: 6, instances: 1, draw: 'triangles', cover: 1, blend: 'add' },
   v => {
-    const q = corner(clip(458, 368), v, 34)
+    const q = corner(clip(408, 368), v, 34)
     return { at: q.at, a: vec4(q.c, 0, 0) }
   },
   spot => light(vec3(0.9, 0.95, 1), crossStar(spot.a.xy) * 0.9),

@@ -16,6 +16,10 @@
 //   For a long, flat nebula give fade.x and fade.y ({r0, r1} each) instead: the
 //   picture then fades along each axis on its own, as fractions of half the
 //   crop's width (x) and half its height (y), the two fades multiplied.
+//   fade.y.bottom ({r0, r1}) may give the bottom half its own fade.
+// - extend: rows to add below the crop, filled with a mirror image of its last
+//   rows (so a nebula cut off by the photo's edge can fade out in its own haze);
+//   the fades see the taller picture.
 // - grade: an optional colour change, as the source text of a function from (r, g, b)
 //   (0-255) to [r, g, b] (clamped), applied before the fade: to pull a photo's
 //   colours towards a scene's palette (the Hourglass turns the photo's orange
@@ -33,26 +37,38 @@ const path = require('path')
 const zlib = require('zlib')
 const { chromium } = require(process.env.PLAYWRIGHT_CORE || path.join(__dirname, '../../node_modules/playwright-core'))
 
-async function makePixels({ src, out, crop = { x: 0, y: 0, w: 1, h: 1 }, fade = { r0: 0.66, r1: 1.02 }, size = 400, grade, preview }) {
+async function makePixels({ src, out, crop = { x: 0, y: 0, w: 1, h: 1 }, fade = { r0: 0.66, r1: 1.02 }, size = 400, grade, preview, extend = 0 }) {
   const browser = await chromium.launch({ channel: process.env.SCENE_BROWSER || 'msedge' })
   try {
     const page = await browser.newPage()
     const type = /\.png$/i.test(src) ? 'png' : 'jpeg'
     const data = fs.readFileSync(src).toString('base64')
     await page.setContent(`<img id=i src="data:image/${type};base64,${data}">`)
-    const res = await page.evaluate(async ({ size, CROP, FADE, GRADE_SRC }) => {
+    const res = await page.evaluate(async ({ size, CROP, FADE, GRADE_SRC, EXT }) => {
       const img = document.getElementById('i')
       await img.decode()
       const W = img.naturalWidth
       const H = img.naturalHeight
       const ow = size
-      const oh = Math.round((size * (CROP.h * H)) / (CROP.w * W))
+      const oh0 = Math.round((size * (CROP.h * H)) / (CROP.w * W))
+      const oh = oh0 + EXT
       const c = document.createElement('canvas')
       c.width = ow
       c.height = oh
       const g = c.getContext('2d')
       g.imageSmoothingQuality = 'high'
-      g.drawImage(img, CROP.x * W, CROP.y * H, CROP.w * W, CROP.h * H, 0, 0, ow, oh)
+      g.drawImage(img, CROP.x * W, CROP.y * H, CROP.w * W, CROP.h * H, 0, 0, ow, oh0)
+      if (EXT) {
+        // Extend the picture downwards by a mirror image of its last rows.
+        g.save()
+        g.beginPath()
+        g.rect(0, oh0, ow, EXT)
+        g.clip()
+        g.translate(0, oh0 * 2)
+        g.scale(1, -1)
+        g.drawImage(img, CROP.x * W, CROP.y * H, CROP.w * W, CROP.h * H, 0, 0, ow, oh0)
+        g.restore()
+      }
       const d = g.getImageData(0, 0, ow, oh)
       const px = d.data
       const GRADE = GRADE_SRC ? new Function('r', 'g', 'b', GRADE_SRC) : null
@@ -65,7 +81,7 @@ async function makePixels({ src, out, crop = { x: 0, y: 0, w: 1, h: 1 }, fade = 
             return t <= 0 ? 1 : t >= 1 ? 0 : 1 - t * t * (3 - 2 * t)
           }
           const k = FADE.x
-            ? step(Math.abs(x - ow / 2) / (ow / 2), FADE.x) * step(Math.abs(y - oh / 2) / (oh / 2), FADE.y)
+            ? step(Math.abs(x - ow / 2) / (ow / 2), FADE.x) * step(Math.abs(y - oh / 2) / (oh / 2), y > oh / 2 && FADE.y.bottom ? FADE.y.bottom : FADE.y)
             : step(Math.hypot(x - ow / 2, y - oh / 2) / R, FADE)
           const i = (y * ow + x) * 4
           if (GRADE) {
@@ -80,7 +96,7 @@ async function makePixels({ src, out, crop = { x: 0, y: 0, w: 1, h: 1 }, fade = 
       }
       g.putImageData(d, 0, 0)
       return { W, H, ow, oh, rgb, url: c.toDataURL('image/jpeg', 0.9) }
-    }, { size, CROP: crop, FADE: fade, GRADE_SRC: grade })
+    }, { size, CROP: crop, FADE: fade, GRADE_SRC: grade, EXT: extend })
     const head = Buffer.alloc(4)
     head.writeUInt16LE(res.ow, 0)
     head.writeUInt16LE(res.oh, 2)
